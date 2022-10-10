@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/home/j999yp/cs61b/library-sp18/javalib/*.jar"
+    ]
+}
