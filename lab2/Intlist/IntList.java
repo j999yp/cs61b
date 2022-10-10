@@ -84,14 +84,14 @@ public class IntList {
         //TODO:  fill in method
         if(A == null)
         {
-            return null;
+            return B;
         }
         IntList ptr = A;
-        while(ptr.rest!=null)
+        while(ptr.rest != null)
         {
-            ptr=ptr.rest;
+            ptr = ptr.rest;
         }
-        ptr.rest=B;
+        ptr.rest = B;
         return A;
     }
 
