@@ -75,4 +75,8 @@ class Planet {
         xxPos += xxVel * time;
         yyPos += yyVel * time;
     }
+
+    public void draw(){
+        StdDraw.picture(xxPos,yyPos,"images/"+imgFileName);
+    }
 }
