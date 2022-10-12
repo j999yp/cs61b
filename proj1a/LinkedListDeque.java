@@ -1,11 +1,11 @@
-public class LinkedListDeque<Type>{
+public class LinkedListDeque<T>{
 
     private class Node{ //node class
-        private Type item;
+        private T item;
         private Node prev;
         private Node next;
 
-        private Node(Type Item, Node Prev, Node Next) { //constructor for node class
+        private Node(T Item, Node Prev, Node Next) { //constructor for node class
             item=Item;
             prev=Prev;
             next=Next;
@@ -25,14 +25,14 @@ public class LinkedListDeque<Type>{
         size = 0;
     }
 
-    public void addFirst(Type item){
+    public void addFirst(T item){
         Node new_node = new Node(item, end, front);
         front.prev = new_node;
         front = new_node;
         size++;
     }
 
-    public void addLast(Type item){
+    public void addLast(T item){
         Node new_node = new Node(item, end, front);
         end.next = new_node;
         end = new_node;
@@ -59,23 +59,23 @@ public class LinkedListDeque<Type>{
         System.out.println();
     }
 
-    public Type removeFirst(){
-        Type val = front.item;
+    public T removeFirst(){
+        T val = front.item;
         front = front.next;
         front.prev = end;
         size--;
         return val;
     }
 
-    public Type removeLast(){
-        Type val = end.item;
+    public T removeLast(){
+        T val = end.item;
         end = end.prev;
         end.next = front;
         size--;
         return val;
     }
 
-    public Type get(int index){
+    public T get(int index){
         //TODO if index < 0 ?
         if(index < size/2){
             int cnt = 0;
@@ -105,11 +105,11 @@ public class LinkedListDeque<Type>{
         }
     }
 
-    public Type getRecursive(int index){
+    public T getRecursive(int index){
         return getRecursiveHelper(front, index);
     }
 
-    private Type getRecursiveHelper(Node ptr, int index){
+    private T getRecursiveHelper(Node ptr, int index){
         //TODO if index < 0 ?
         if(index == 0){
             return ptr.item;

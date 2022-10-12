@@ -1,16 +1,16 @@
-public class ArrayDeque<Type> {
+public class ArrayDeque<T> {
     private int total = 8;
     private int free = 8;
     private int head = 0;
     private int tail = 1;
 
-    private Type[] list;
+    private T[] list;
     public ArrayDeque() { // constructor
-        list = (Type[]) new Object[8];
+        list = (T[]) new Object[8];
     }
 
     private void Extend(){
-        Type[] newList = (Type[]) new Object[total * 2];
+        T[] newList = (T[]) new Object[total * 2];
         int ptr = tail;
         int i = 0;
         while(ptr != head){
@@ -26,7 +26,7 @@ public class ArrayDeque<Type> {
     }
 
     private void Free(){
-        Type[] newList = (Type[]) new Object[total / 2];
+        T[] newList = (T[]) new Object[total / 2];
         int ptr = (head + 1) % total;
         int i = 0;
         while(ptr != tail){
@@ -41,7 +41,7 @@ public class ArrayDeque<Type> {
         tail = i;
     }
 
-    public void addFirst(Type item){
+    public void addFirst(T item){
         if(free == 0){
             Extend();
         }
@@ -50,7 +50,7 @@ public class ArrayDeque<Type> {
         free--;
     }
 
-    public void addLast(Type item){
+    public void addLast(T item){
         if(free == 0){
             Extend();
         }
@@ -76,12 +76,12 @@ public class ArrayDeque<Type> {
         System.out.println();
     }
 
-    public Type removeFirst(){
+    public T removeFirst(){
         if(free == total){
             return null;
         }
         head = (head + 1) % total;
-        Type val = list[head];
+        T val = list[head];
         free++;
         if((total >= 16) && (free > total * 3 / 4)){
             Free();
@@ -89,12 +89,12 @@ public class ArrayDeque<Type> {
         return val;
     }
 
-    public Type removeLast(){
+    public T removeLast(){
         if(free == total){
             return null;
         }
         tail = (tail - 1) % total;
-        Type val = list[tail];
+        T val = list[tail];
         free++;
         if((total >= 16) && (free > total * 3 / 4)){
             Free();
@@ -102,7 +102,7 @@ public class ArrayDeque<Type> {
         return val;
     }
 
-    public Type get(int index){
+    public T get(int index){
         return list[(head+1+index)%total];
     }
 
