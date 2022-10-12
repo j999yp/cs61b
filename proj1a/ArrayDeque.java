@@ -94,7 +94,7 @@ public class ArrayDeque<T> {
         if (free == total) {
             return null;
         }
-        tail = (tail - 1) % total;
+        tail = (tail - 1 + total) % total;
         T val = list[tail];
         free++;
         if ((total >= 16) && (free > total * 3 / 4)) {
