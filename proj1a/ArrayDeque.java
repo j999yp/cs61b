@@ -5,15 +5,16 @@ public class ArrayDeque<T> {
     private int tail = 1;
 
     private T[] list;
+
     public ArrayDeque() { // constructor
         list = (T[]) new Object[8];
     }
 
-    private void Extend(){
+    private void Extend() {
         T[] newList = (T[]) new Object[total * 2];
         int ptr = tail;
         int i = 0;
-        while(ptr != head){
+        while (ptr != head) {
             newList[i++] = list[ptr++];
             ptr = ptr % total;
         }
@@ -25,15 +26,15 @@ public class ArrayDeque<T> {
         tail = i + 1;
     }
 
-    private void Free(){
+    private void Free() {
         T[] newList = (T[]) new Object[total / 2];
         int ptr = (head + 1) % total;
         int i = 0;
-        while(ptr != tail){
+        while (ptr != tail) {
             newList[i++] = list[ptr++];
             ptr = ptr % total;
         }
-        
+
         list = newList;
         free = free - total / 2;
         total = total / 2;
@@ -41,8 +42,8 @@ public class ArrayDeque<T> {
         tail = i;
     }
 
-    public void addFirst(T item){
-        if(free == 0){
+    public void addFirst(T item) {
+        if (free == 0) {
             Extend();
         }
         list[head] = item;
@@ -50,8 +51,8 @@ public class ArrayDeque<T> {
         free--;
     }
 
-    public void addLast(T item){
-        if(free == 0){
+    public void addLast(T item) {
+        if (free == 0) {
             Extend();
         }
         list[tail] = item;
@@ -59,51 +60,51 @@ public class ArrayDeque<T> {
         free--;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return free == total;
     }
 
-    public int size(){
+    public int size() {
         return total - free;
     }
 
-    public void printDeque(){
-        int i = (head + 1)% total;
-        while(i != tail){
-            System.out.print(list[i]+" ");
+    public void printDeque() {
+        int i = (head + 1) % total;
+        while (i != tail) {
+            System.out.print(list[i] + " ");
             i++;
         }
         System.out.println();
     }
 
-    public T removeFirst(){
-        if(free == total){
+    public T removeFirst() {
+        if (free == total) {
             return null;
         }
         head = (head + 1) % total;
         T val = list[head];
         free++;
-        if((total >= 16) && (free > total * 3 / 4)){
+        if ((total >= 16) && (free > total * 3 / 4)) {
             Free();
         }
         return val;
     }
 
-    public T removeLast(){
-        if(free == total){
+    public T removeLast() {
+        if (free == total) {
             return null;
         }
         tail = (tail - 1) % total;
         T val = list[tail];
         free++;
-        if((total >= 16) && (free > total * 3 / 4)){
+        if ((total >= 16) && (free > total * 3 / 4)) {
             Free();
         }
         return val;
     }
 
-    public T get(int index){
-        return list[(head+1+index)%total];
+    public T get(int index) {
+        return list[(head + 1 + index) % total];
     }
 
 }

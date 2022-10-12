@@ -1,23 +1,23 @@
-public class LinkedListDeque<T>{
+public class LinkedListDeque<T> {
 
-    private class Node{ //node class
+    private class Node { // node class
         private T item;
         private Node prev;
         private Node next;
 
-        private Node(T Item, Node Prev, Node Next) { //constructor for node class
-            item=Item;
-            prev=Prev;
-            next=Next;
-        }   
+        private Node(T Item, Node Prev, Node Next) { // constructor for node class
+            item = Item;
+            prev = Prev;
+            next = Next;
+        }
     }
 
     private Node sentinel;
-    private Node front,end;
+    private Node front, end;
     private int size;
 
-    public LinkedListDeque(){ //constructor for deque class
-        sentinel = new Node(null,null,null);
+    public LinkedListDeque() { // constructor for deque class
+        sentinel = new Node(null, null, null);
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
         front = sentinel;
@@ -25,41 +25,40 @@ public class LinkedListDeque<T>{
         size = 0;
     }
 
-    public void addFirst(T item){
+    public void addFirst(T item) {
         Node new_node = new Node(item, end, front);
         front.prev = new_node;
         front = new_node;
         size++;
     }
 
-    public void addLast(T item){
+    public void addLast(T item) {
         Node new_node = new Node(item, end, front);
         end.next = new_node;
         end = new_node;
         size++;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size == 0;
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
 
-    public void printDeque(){
+    public void printDeque() {
         Node ptr = front;
-        do{
-            if(ptr != sentinel){
-                System.out.print(ptr.item+" ");
+        do {
+            if (ptr != sentinel) {
+                System.out.print(ptr.item + " ");
             }
             ptr = ptr.next;
-        }
-        while(ptr != front);
+        } while (ptr != front);
         System.out.println();
     }
 
-    public T removeFirst(){
+    public T removeFirst() {
         T val = front.item;
         front = front.next;
         front.prev = end;
@@ -67,7 +66,7 @@ public class LinkedListDeque<T>{
         return val;
     }
 
-    public T removeLast(){
+    public T removeLast() {
         T val = end.item;
         end = end.prev;
         end.next = front;
@@ -75,46 +74,44 @@ public class LinkedListDeque<T>{
         return val;
     }
 
-    public T get(int index){
-        //TODO if index < 0 ?
-        if(index < size/2){
+    public T get(int index) {
+        // TODO if index < 0 ?
+        if (index < size / 2) {
             int cnt = 0;
             Node ptr = front;
-            while(cnt != index){
+            while (cnt != index) {
                 ptr = ptr.next;
-                if(ptr != sentinel){
+                if (ptr != sentinel) {
                     cnt++;
                 }
             }
             return ptr.item;
-        }
-        else if(index < size){
+        } else if (index < size) {
             int cnt = 1;
             index = size - index;
             Node ptr = end;
-            while(cnt != index){
+            while (cnt != index) {
                 ptr = ptr.prev;
-                if(ptr != sentinel){
+                if (ptr != sentinel) {
                     cnt++;
                 }
             }
             return ptr.item;
-        }
-        else{
+        } else {
             return null;
         }
     }
 
-    public T getRecursive(int index){
+    public T getRecursive(int index) {
         return getRecursiveHelper(front, index);
     }
 
-    private T getRecursiveHelper(Node ptr, int index){
-        //TODO if index < 0 ?
-        if(index == 0){
+    private T getRecursiveHelper(Node ptr, int index) {
+        // TODO if index < 0 ?
+        if (index == 0) {
             return ptr.item;
         }
-        return getRecursiveHelper(ptr.next, index-1);
+        return getRecursiveHelper(ptr.next, index - 1);
     }
 
 }
