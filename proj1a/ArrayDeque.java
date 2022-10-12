@@ -10,7 +10,7 @@ public class ArrayDeque<T> {
         list = (T[]) new Object[8];
     }
 
-    private void Extend() {
+    private void extend() {
         T[] newList = (T[]) new Object[total * 2];
         int ptr = tail;
         int i = 0;
@@ -26,7 +26,7 @@ public class ArrayDeque<T> {
         tail = i + 1;
     }
 
-    private void Free() {
+    private void free() {
         T[] newList = (T[]) new Object[total / 2];
         int ptr = (head + 1) % total;
         int i = 0;
@@ -44,7 +44,7 @@ public class ArrayDeque<T> {
 
     public void addFirst(T item) {
         if (free == 0) {
-            Extend();
+            extend();
         }
         list[head] = item;
         head = (head - 1 + total) % total;
@@ -53,7 +53,7 @@ public class ArrayDeque<T> {
 
     public void addLast(T item) {
         if (free == 0) {
-            Extend();
+            extend();
         }
         list[tail] = item;
         tail = (tail + 1) % total;
@@ -85,7 +85,7 @@ public class ArrayDeque<T> {
         T val = list[head];
         free++;
         if ((total >= 16) && (free > total * 3 / 4)) {
-            Free();
+            free();
         }
         return val;
     }
@@ -98,7 +98,7 @@ public class ArrayDeque<T> {
         T val = list[tail];
         free++;
         if ((total >= 16) && (free > total * 3 / 4)) {
-            Free();
+            free();
         }
         return val;
     }
