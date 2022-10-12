@@ -67,6 +67,9 @@ public class LinkedListDeque<T> {
         front = front.next;
         front.prev = old_prev;
         size--;
+        if(size < 0) {
+            size = 0;
+        }
         return val;
     }
 
@@ -79,6 +82,9 @@ public class LinkedListDeque<T> {
         end = end.prev;
         end.next = old_next;
         size--;
+        if(size < 0) {
+            size = 0;
+        }
         return val;
     }
 
