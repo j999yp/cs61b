@@ -59,8 +59,7 @@ public class LinkedListDeque<T> {
     }
 
     public T removeFirst() {
-        if(front == sentinel)
-        {
+        if (front == sentinel) {
             front = front.next;
         }
         T val = front.item;
@@ -72,8 +71,7 @@ public class LinkedListDeque<T> {
     }
 
     public T removeLast() {
-        if(end == sentinel)
-        {
+        if (end == sentinel) {
             end = end.prev;
         }
         T val = end.item;
@@ -85,35 +83,26 @@ public class LinkedListDeque<T> {
     }
 
     public T get(int index) {
-        // TODO if index < 0 ?
-        if (index < size / 2) {
-            int cnt = 0;
-            Node ptr = front;
-            while (cnt != index) {
-                ptr = ptr.next;
-                if (ptr != sentinel) {
-                    cnt++;
-                }
-            }
-            return ptr.item;
-        } else if (index < size) {
-            int cnt = 1;
-            index = size - index;
-            Node ptr = end;
-            while (cnt != index) {
-                ptr = ptr.prev;
-                if (ptr != sentinel) {
-                    cnt++;
-                }
-            }
-            return ptr.item;
-        } else {
-            return null;
+        int i = 0;
+        Node ptr = front;
+        if (ptr == sentinel) {
+            ptr = ptr.next;
         }
+        while (i != index) {
+            ptr = ptr.next;
+            if (ptr != sentinel) {
+                i++;
+            }
+        }
+        return ptr.item;
     }
 
     public T getRecursive(int index) {
-        return getRecursiveHelper(front, index);
+        if (front != sentinel) {
+            return getRecursiveHelper(front, index);
+        } else {
+            return getRecursiveHelper(front.next, index);
+        }
     }
 
     private T getRecursiveHelper(Node ptr, int index) {
@@ -121,8 +110,7 @@ public class LinkedListDeque<T> {
         if (index == 0) {
             return ptr.item;
         }
-        if(ptr == sentinel)
-        {
+        if (ptr == sentinel) {
             return getRecursiveHelper(ptr.next, index);
         }
         return getRecursiveHelper(ptr.next, index - 1);
