@@ -59,17 +59,27 @@ public class LinkedListDeque<T> {
     }
 
     public T removeFirst() {
+        if(front == sentinel)
+        {
+            front = front.next;
+        }
         T val = front.item;
+        Node old_prev = front.prev;
         front = front.next;
-        front.prev = end;
+        front.prev = old_prev;
         size--;
         return val;
     }
 
     public T removeLast() {
+        if(end == sentinel)
+        {
+            end = end.prev;
+        }
         T val = end.item;
+        Node old_next = end.next;
         end = end.prev;
-        end.next = front;
+        end.next = old_next;
         size--;
         return val;
     }
@@ -110,6 +120,10 @@ public class LinkedListDeque<T> {
         // TODO if index < 0 ?
         if (index == 0) {
             return ptr.item;
+        }
+        if(ptr == sentinel)
+        {
+            return getRecursiveHelper(ptr.next, index);
         }
         return getRecursiveHelper(ptr.next, index - 1);
     }
