@@ -60,7 +60,7 @@ public class ArrayDeque<Type> {
     }
 
     public boolean isEmpty(){
-        return free == 0;
+        return free == total;
     }
 
     public int size(){
@@ -71,6 +71,7 @@ public class ArrayDeque<Type> {
         int i = (head + 1)% total;
         while(i != tail){
             System.out.print(list[i]+" ");
+            i++;
         }
         System.out.println();
     }

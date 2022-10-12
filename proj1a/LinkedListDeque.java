@@ -13,24 +13,29 @@ public class LinkedListDeque<Type>{
     }
 
     private Node sentinel;
+    private Node front,end;
     private int size;
 
     public LinkedListDeque(){ //constructor for deque class
         sentinel = new Node(null,null,null);
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
+        front = sentinel;
+        end = sentinel;
         size = 0;
     }
 
     public void addFirst(Type item){
-        Node new_node = new Node(item, sentinel.prev, sentinel);
-        sentinel.prev = new_node;
+        Node new_node = new Node(item, end, front);
+        front.prev = new_node;
+        front = new_node;
         size++;
     }
 
     public void addLast(Type item){
-        Node new_node = new Node(item, sentinel, sentinel.next);
-        sentinel.next = new_node;
+        Node new_node = new Node(item, end, front);
+        end.next = new_node;
+        end = new_node;
         size++;
     }
 
@@ -43,24 +48,29 @@ public class LinkedListDeque<Type>{
     }
 
     public void printDeque(){
-        Node ptr = sentinel.next;
-        while(ptr != sentinel){
-            System.out.print(ptr.item+" ");
+        Node ptr = front;
+        do{
+            if(ptr != sentinel){
+                System.out.print(ptr.item+" ");
+            }
             ptr = ptr.next;
         }
+        while(ptr != front);
         System.out.println();
     }
 
     public Type removeFirst(){
-        Type val = sentinel.prev.item;
-        sentinel.prev = sentinel.prev.prev;
+        Type val = front.item;
+        front = front.next;
+        front.prev = end;
         size--;
         return val;
     }
 
     public Type removeLast(){
-        Type val = sentinel.next.item;
-        sentinel.next = sentinel.next.next;
+        Type val = end.item;
+        end = end.prev;
+        end.next = front;
         size--;
         return val;
     }
@@ -69,20 +79,24 @@ public class LinkedListDeque<Type>{
         //TODO if index < 0 ?
         if(index < size/2){
             int cnt = 0;
-            Node ptr = sentinel.next;
+            Node ptr = front;
             while(cnt != index){
                 ptr = ptr.next;
-                cnt++;
+                if(ptr != sentinel){
+                    cnt++;
+                }
             }
             return ptr.item;
         }
         else if(index < size){
             int cnt = 1;
             index = size - index;
-            Node ptr = sentinel.prev;
+            Node ptr = end;
             while(cnt != index){
                 ptr = ptr.prev;
-                cnt++;
+                if(ptr != sentinel){
+                    cnt++;
+                }
             }
             return ptr.item;
         }
@@ -92,7 +106,7 @@ public class LinkedListDeque<Type>{
     }
 
     public Type getRecursive(int index){
-        return getRecursiveHelper(sentinel.next, index);
+        return getRecursiveHelper(front, index);
     }
 
     private Type getRecursiveHelper(Node ptr, int index){
