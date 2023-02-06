@@ -10,8 +10,7 @@ public class testGame {
         TERenderer ter = new TERenderer();
         ter.initialize(Game.WIDTH, Game.HEIGHT);
         Game game = new Game(1,ter);
-        TETile[][] world = new TETile[Game.WIDTH][Game.HEIGHT];
-        game.generate_maze(world);
+        TETile[][] world = game.playWithInputString("abcNab2abb3412S");
         ter.renderFrame(world);
     }
 }

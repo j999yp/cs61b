@@ -11,9 +11,14 @@ public class Game {
     TERenderer ter = new TERenderer();
     int union_set[];
     List<Pair> rooms = new ArrayList<Pair>();
+    enum State{
+        main_menu, input_seed, generate_maze, game
+    };
+    State current_state = State.main_menu;
     /* Feel free to change the width and height. */
     public static final int WIDTH = 32;
     public static final int HEIGHT = 32;
+    public TETile[][] world = new TETile[WIDTH][HEIGHT];
 
     /**
      * Method used for playing a fresh game. The game should start from the main
@@ -48,20 +53,61 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
 
-        TETile[][] finalWorldFrame = null;
-        return finalWorldFrame;
+        int index = 0, seed = 0;
+        input = input.toUpperCase();
+        while (current_state != State.game) {
+            switch (current_state) {
+                case main_menu:
+                    switch (input.charAt(index)) {
+                        case 'N':
+                            current_state = State.input_seed;
+                            break;
+                        // TODO load game
+                        case 'L':
+                            index++;
+                            return null;
+                        case 'Q':
+                            System.exit(0);
+                            break;
+                        default:
+                            index++;
+                            if (index >= input.length())
+                                System.exit(1);
+                    }
+                    break;
+                case input_seed:
+                    char c;
+                    while ((c = input.charAt(++index)) != 'S') {
+                        if (Character.isDigit(c))
+                            seed = seed * 10 + c - '0';
+                    }
+                    index++;
+                    current_state = State.generate_maze;
+                    break;
+                case generate_maze:
+                    random = new Random(seed);
+                    generate_maze(world);
+                    current_state = State.game;
+                    break;
+            }
+        }
+        return world;
     }
 
     // proj2 phase1
 
     private Random random;
 
+    public Game() {
+        
+    }
+
     public Game(int seed, TERenderer tter) {
         random = new Random(seed);
         ter = tter;
     }
 
-    public void generate_maze(TETile world[][]) {
+    private void generate_maze(TETile world[][]) {
         for (int x = 0; x < Game.WIDTH; x++) {
             for (int y = 0; y < Game.HEIGHT; y++) {
                 world[x][y] = Tileset.NOTHING;
