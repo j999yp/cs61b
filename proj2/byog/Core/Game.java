@@ -4,6 +4,7 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import java.util.*;
+import java.io.*;
 
 import java.util.Random;
 
@@ -11,10 +12,15 @@ public class Game {
     TERenderer ter = new TERenderer();
     int union_set[];
     List<Pair> rooms = new ArrayList<Pair>();
-    enum State{
+
+    enum InitState {
         main_menu, input_seed, generate_maze, game
     };
-    State current_state = State.main_menu;
+
+    InitState current_state = InitState.main_menu;
+    CharGenerator c;
+    int x = 0, y = 0, seed;
+    TETile floor = Tileset.NOTHING;
     /* Feel free to change the width and height. */
     public static final int WIDTH = 32;
     public static final int HEIGHT = 32;
@@ -25,6 +31,12 @@ public class Game {
      * menu.
      */
     public void playWithKeyboard() {
+        c = new CharGenerator();
+        init_game();
+        while (true) {
+            play(c.next());
+            ter.renderFrame(world);
+        }
     }
 
     /**
@@ -53,45 +65,118 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
 
-        int index = 0, seed = 0;
-        input = input.toUpperCase();
-        while (current_state != State.game) {
+        c = new CharGenerator(input.toUpperCase());
+        init_game();
+        while (c.has_next())
+            play(c.next());
+        return world;
+    }
+
+    private void init_game() {
+        while (current_state != InitState.game) {
             switch (current_state) {
                 case main_menu:
-                    switch (input.charAt(index)) {
+                    switch (Character.toUpperCase(c.next())) {
                         case 'N':
-                            current_state = State.input_seed;
+                            current_state = InitState.input_seed;
                             break;
-                        // TODO load game
                         case 'L':
-                            index++;
-                            return null;
+                            File f = new File("./world.ser");
+                            if (f.exists()) {
+                                try {
+                                    FileInputStream fs = new FileInputStream(f);
+                                    ObjectInputStream os = new ObjectInputStream(fs);
+                                    Save save = (Save) os.readObject();
+                                    os.close();
+                                    seed = save.seed;
+                                    x = save.x;
+                                    y = save.y;
+                                    current_state = InitState.generate_maze;
+                                } catch (Exception e) {
+                                    System.out.println("Load failed: " + e.getMessage());
+                                }
+                            }
+                            break;
                         case 'Q':
                             System.exit(0);
                             break;
                         default:
-                            index++;
-                            if (index >= input.length())
-                                System.exit(1);
+                            break;
                     }
                     break;
                 case input_seed:
-                    char c;
-                    while ((c = input.charAt(++index)) != 'S') {
-                        if (Character.isDigit(c))
-                            seed = seed * 10 + c - '0';
+                    char ch;
+                    while ((ch = c.next()) != 'S') {
+                        if (Character.isDigit(ch))
+                            seed = seed * 10 + ch - '0';
                     }
-                    index++;
-                    current_state = State.generate_maze;
+                    current_state = InitState.generate_maze;
                     break;
                 case generate_maze:
                     random = new Random(seed);
                     generate_maze(world);
-                    current_state = State.game;
+                    current_state = InitState.game;
                     break;
             }
         }
-        return world;
+    }
+
+    private void play(char ch) {
+        world[x][y] = floor;
+        switch (Character.toUpperCase(ch)) {
+            case 'A':
+                x -= 1;
+                if (x < 0)
+                    x = 0;
+                if (world[x][y] == Tileset.WALL)
+                    x += 1;
+                break;
+            case 'D':
+                x += 1;
+                if (x >= WIDTH)
+                    x = WIDTH - 1;
+                if (world[x][y] == Tileset.WALL)
+                    x -= 1;
+                break;
+            case 'W':
+                y += 1;
+                if (y >= HEIGHT)
+                    y = HEIGHT - 1;
+                if (world[x][y] == Tileset.WALL)
+                    y -= 1;
+                break;
+            case 'S':
+                y -= 1;
+                if (y < 0)
+                    y = 0;
+                if (world[x][y] == Tileset.WALL)
+                    y += 1;
+                break;
+            case ':':
+                while (!c.has_next())
+                    ;
+                if (Character.toUpperCase(c.peek()) == 'Q') {
+                    File f = new File("./world.ser");
+                    try {
+                        if (!f.exists())
+                            f.createNewFile();
+                        FileOutputStream fs = new FileOutputStream(f);
+                        ObjectOutputStream os = new ObjectOutputStream(fs);
+                        Save save = new Save(seed, x, y);
+                        os.writeObject(save);
+                        os.close();
+                        System.exit(0);
+                    } catch (Exception e) {
+                        System.out.println("Save failed: " + e.getMessage());
+                    }
+                }
+                break;
+        }
+        if (world[x][y] == Tileset.LOCKED_DOOR)
+            floor = Tileset.UNLOCKED_DOOR;
+        else
+            floor = world[x][y];
+        world[x][y] = Tileset.PLAYER;
     }
 
     // proj2 phase1
@@ -99,7 +184,7 @@ public class Game {
     private Random random;
 
     public Game() {
-        
+        ;
     }
 
     public Game(int seed, TERenderer tter) {
@@ -113,9 +198,9 @@ public class Game {
                 world[x][y] = Tileset.NOTHING;
             }
         }
-        int room_width = WIDTH/5;
-        int room_height = HEIGHT/5;
-        int room_num = random.nextInt(11)+10;
+        int room_width = WIDTH / 5;
+        int room_height = HEIGHT / 5;
+        int room_num = random.nextInt(11) + 10;
         generate_rooms(world, room_width, room_height, room_num);
         generate_hallways(world, room_num);
         generate_walls(world);
