@@ -10,6 +10,8 @@ public class PercolationStats {
 
     public PercolationStats(int N, int T, PercolationFactory pf) // perform T independent experiments on an N-by-N grid
     {
+        if (T <= 0 || N <= 0)
+            throw new java.lang.IllegalArgumentException();
         this.T = T;
         lst = new int[T];
         for (int i = 0; i < T; i++) {
@@ -45,4 +47,3 @@ public class PercolationStats {
         return mean() + 1.96 * stddev() / Math.pow(T, 0.5);
     }
 }
-
