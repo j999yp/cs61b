@@ -5,7 +5,7 @@ import edu.princeton.cs.introcs.*;
 public class PercolationStats {
 
     private Percolation p;
-    private int[] lst;
+    private double[] lst;
     private int T;
 
     public PercolationStats(int N, int T, PercolationFactory pf) // perform T independent experiments on an N-by-N grid
@@ -13,17 +13,15 @@ public class PercolationStats {
         if (T <= 0 || N <= 0)
             throw new java.lang.IllegalArgumentException();
         this.T = T;
-        lst = new int[T];
+        lst = new double[T];
         for (int i = 0; i < T; i++) {
-            int cnt = 0;
             p = pf.make(N);
             while (!p.percolates()) {
                 int x = StdRandom.uniform(N);
                 int y = StdRandom.uniform(N);
                 p.open(x, y);
-                cnt++;
             }
-            lst[i] = cnt;
+            lst[i] = (double)p.numberOfOpenSites() / (N * N);
         }
     }
 

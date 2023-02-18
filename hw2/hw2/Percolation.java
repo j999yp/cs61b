@@ -6,6 +6,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
 
     private WeightedQuickUnionUF UF;
+    private WeightedQuickUnionUF percolation;
     private boolean is_open[][];
     private int N;
     private int numOpenSite = 0;
@@ -16,6 +17,7 @@ public class Percolation {
             throw new java.lang.IllegalArgumentException("N must be greater than 0.");
         this.N = N;
         UF = new WeightedQuickUnionUF(N * N + 1);
+        percolation = new WeightedQuickUnionUF(N * N + 2);
         is_open = new boolean[N][N];
     }
 
@@ -25,21 +27,37 @@ public class Percolation {
         if (is_open[row][col] == false) {
             is_open[row][col] = true;
             numOpenSite++;
-            if (row == 0)
+            if (row == 0) {
                 UF.union(col, N * N);
+                percolation.union(col, N * N);
+            } 
+            if (row == N - 1)
+                percolation.union(row * N + col, N * N + 1);
             // iff i < j, i-->j
             // i==j, j-->i
-            if (row - 1 >= 0 && is_open[row - 1][col])
+            int pos = row * N + col;
+            int tmp = (row - 1) * N + col;
+            if (row - 1 >= 0 && is_open[row - 1][col] && !UF.connected(pos, tmp)) {
                 UF.union((row - 1) * N + col, row * N + col);
+                percolation.union((row - 1) * N + col, row * N + col);
+            }
 
-            if (row + 1 < N && is_open[row + 1][col])
+            tmp = (row + 1) * N + col;
+            if (row + 1 < N && is_open[row + 1][col] && !UF.connected(pos, tmp)) {
                 UF.union((row + 1) * N + col, row * N + col);
-
-            if (col - 1 >= 0 && is_open[row][col - 1])
+                percolation.union((row + 1) * N + col, row * N + col);
+            }
+            tmp = row * N + col - 1;
+            if (col - 1 >= 0 && is_open[row][col - 1] && !UF.connected(pos, tmp)) {
                 UF.union(row * N + (col - 1), row * N + col);
+                percolation.union(row * N + (col - 1), row * N + col);
+            }
 
-            if (col + 1 < N && is_open[row][col + 1])
+            tmp = row * N + col + 1;
+            if (col + 1 < N && is_open[row][col + 1] && !UF.connected(pos, tmp)) {
                 UF.union(row * N + (col + 1), row * N + col);
+                percolation.union(row * N + (col + 1), row * N + col);
+            }
         }
     }
 
@@ -62,11 +80,7 @@ public class Percolation {
 
     public boolean percolates() // does the system percolate?
     {
-        for (int i = 0; i < N; i++)
-            if (is_open[N - 1][i])
-                if (isFull(N - 1, i))
-                    return true;
-        return false;
+        return percolation.connected(N * N, N * N + 1);
     }
 
     public static void main(String[] args) // use for unit testing (not required)
